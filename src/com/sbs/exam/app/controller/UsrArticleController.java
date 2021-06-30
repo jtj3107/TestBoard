@@ -69,7 +69,10 @@ public class UsrArticleController extends Controller {
 		System.out.printf("새 내용 : ");
 		article.setBody(sc.nextLine().trim());
 		article.setUpdateDate(Util.getNowDateStr());
-
+	
+		String keyword = Util.getKeywordsStrFromStr(article.getBody());
+		article.setKeyword(keyword);
+	
 		System.out.printf("%d번 게시물을 수정하였습니다.\n", id);
 	}
 
@@ -120,6 +123,7 @@ public class UsrArticleController extends Controller {
 		System.out.println("작성자 : " + member.getNickname());
 		System.out.println("좋아요 : " + article.getLike());
 		System.out.println("싫어요 : " + article.getDisLike());
+		System.out.println("키워드 : " + article.getKeyword());
 		
 		article.setHit(article.getHit() +1);
 	}
@@ -134,12 +138,12 @@ public class UsrArticleController extends Controller {
 		
 		List<Article> articles = articleService.getFilterArticles(boardId, searchKeyword, searchKeywordTypeCode, page, 10, orderByColumn, orderAscTypeCode);
 
-		System.out.printf("게시판 / 번호 / 작성날자 / 제목 / 작성자\n");
+		System.out.printf("게시판 / 번호 / 작성날자 / 제목 / 작성자 / 조회수 / 좋아요 / 싫어요\n");
 
 		for (Article article : articles) {
 			Member member = memberService.getMemberById(article.getMemberId());
 			Board board = boardService.getBoardById(article.getBoardId());
-			System.out.printf("%s / %d / %s / %s / %s / %d\n", board.getName(), article.getId(), article.getRegDate(), article.getTitle(), member.getNickname(), article.getHit());
+			System.out.printf("%s / %d / %s / %s / %s / %d / %d / %d\n", board.getName(), article.getId(), article.getRegDate(), article.getTitle(), member.getNickname(), article.getHit(), article.getLike(), article.getDisLike());
 		}
 		
 		System.out.println(articles.size() + "개");
@@ -164,7 +168,9 @@ public class UsrArticleController extends Controller {
 
 		int loginedMemberId = rq.getLoginedMemberId();
 		
-		int id = articleService.write(board.getId(), loginedMemberId, title, body, 0, 0, 0);
+		String keyword = Util.getKeywordsStrFromStr(body);
+		
+		int id = articleService.write(board.getId(), loginedMemberId, title, body, 0, 0, 0, keyword);
 
 		System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 	}

@@ -13,8 +13,8 @@ public class ArticleService {
 		articleRepository = Container.getArticleRepository();
 	}
 
-	public int write(int boardId, int memberId, String title, String body, int hit, int like, int disLike) {
-		return articleRepository.write(boardId, memberId, title, body, hit, like, disLike);
+	public int write(int boardId, int memberId, String title, String body, int hit, int like, int disLike, String keyword) {
+		return articleRepository.write(boardId, memberId, title, body, hit, like, disLike, keyword);
 	}
 
 	public Article getArticleById(int id) {
@@ -37,7 +37,7 @@ public class ArticleService {
 		for (int i = 0; i < 100; i++) {
 			String title = "제목 " + (i + 1);
 			String body = "내용 " + (i + 1);
-			write(i %2 +1, i %2 +1, title, body, (int)(Math.random()*100), (int)(Math.random()*100), (int)(Math.random()*100));
+			write(i %2 +1, i %2 +1, title, body, (int)(Math.random()*100), (int)(Math.random()*100), (int)(Math.random()*100), "#내용");
 		}
 	}
 }

@@ -18,12 +18,12 @@ public class ArticleRepository {
 		lastId = 0;
 	}
 
-	public int write(int boardId, int memberId, String title, String body, int hit, int like, int disLike) {
+	public int write(int boardId, int memberId, String title, String body, int hit, int like, int disLike, String keyword) {
 		int id = lastId + 1;
 		String regDate = Util.getNowDateStr();
 		String updateDate = regDate;
 
-		Article article = new Article(id, regDate, updateDate, boardId, memberId, title, body, hit, like, disLike);
+		Article article = new Article(id, regDate, updateDate, boardId, memberId, title, body, hit, like, disLike, keyword);
 		articles.add(article);
 
 		lastId = id;
@@ -64,7 +64,12 @@ public class ArticleRepository {
 				if (article.getBody().contains(searchKeyword)) {
 					FilteredArticles.add(article);
 				}
-			} else {
+			} else if(searchKeywordTypeCode.equals("keyword")) {
+				if (article.getKeyword().contains(searchKeyword)) {
+					FilteredArticles.add(article);
+				}
+			}
+			else {
 				if (article.getTitle().contains(searchKeyword)) {
 					FilteredArticles.add(article);
 				}
@@ -94,6 +99,7 @@ public class ArticleRepository {
 
 	public List<Article> orderArticles(List<Article> filteredPageArticles, String orderByColumn,
 			String orderAscTypeCode) {
+		System.out.println(orderByColumn);
 		if (orderByColumn.isEmpty() && orderAscTypeCode.isEmpty()) {
 			return filteredPageArticles;
 		}
@@ -122,11 +128,10 @@ public class ArticleRepository {
 						// no swap
 					}
 				};
-				
-				Collections.sort(filteredPageArticles,comparator);
+
+				Collections.sort(filteredPageArticles, comparator);
 
 				return filteredPageArticles;
-
 			} else if (orderAscTypeCode.equals("desc")) {
 				Comparator<Article> comparator = new Comparator<Article>() {
 
@@ -143,11 +148,92 @@ public class ArticleRepository {
 						// no swap
 					}
 				};
-				
-				Collections.sort(filteredPageArticles,comparator);
+
+				Collections.sort(filteredPageArticles, comparator);
 
 				return filteredPageArticles;
 			}
+		} else if (orderByColumn.equals("likeCount")) {
+			if (orderAscTypeCode.equals("asc")) {
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p1.getLike() > p2.getLike())
+							return 1;
+						// swap
+						else if ((p1.getLike() == p2.getLike()) && (p2.getId() > p1.getId()))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+
+				Collections.sort(filteredPageArticles, comparator);
+				return filteredPageArticles;
+			} else if (orderAscTypeCode.equals("desc")) {
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p2.getLike() > p1.getLike())
+							return 1;
+						// swap
+						else if ((p2.getLike() == p1.getLike() && (p2.getId() > p1.getId())))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+
+				Collections.sort(filteredPageArticles, comparator);
+				return filteredPageArticles;
+			}
+		} else if (orderByColumn.equals("dislikeCount")) {
+			if (orderAscTypeCode.equals("asc")) {
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p1.getDisLike() > p2.getDisLike())
+							return 1;
+						// swap
+						else if ((p1.getDisLike() == p2.getDisLike()) && (p2.getId() > p1.getId()))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+
+				Collections.sort(filteredPageArticles, comparator);
+				return filteredPageArticles;
+			} else if (orderAscTypeCode.equals("desc")){
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p2.getDisLike() > p1.getDisLike())
+							return 1;
+						// swap
+						else if ((p2.getDisLike() == p1.getDisLike()) && (p1.getId() > p2.getId()))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+
+				Collections.sort(filteredPageArticles, comparator);
+				return filteredPageArticles;
+			}
+
 		}
 
 		return filteredPageArticles;

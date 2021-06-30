@@ -1,7 +1,5 @@
 package com.sbs.exam.app.dto;
 
-import java.util.Comparator;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +18,7 @@ public class Article implements Comparable<Article> {
 	private int hit;
 	private int like;
 	private int disLike;
+	private String keyword;
 
 	@Override
 	public int compareTo(Article a1) {
