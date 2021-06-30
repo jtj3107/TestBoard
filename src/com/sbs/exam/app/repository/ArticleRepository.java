@@ -1,6 +1,7 @@
 package com.sbs.exam.app.repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -93,27 +94,63 @@ public class ArticleRepository {
 
 	public List<Article> orderArticles(List<Article> filteredPageArticles, String orderByColumn,
 			String orderAscTypeCode) {
-		if(orderByColumn.isEmpty() && orderAscTypeCode.isEmpty()) {
+		if (orderByColumn.isEmpty() && orderAscTypeCode.isEmpty()) {
 			return filteredPageArticles;
 		}
-		
+
 		if (orderByColumn.equals("id")) {
-			if(orderAscTypeCode.equals("asc")) {
+			if (orderAscTypeCode.equals("asc")) {
 				Collections.sort(filteredPageArticles, Collections.reverseOrder());
-			}
-			else if (orderAscTypeCode.equals("desc")) {
+			} else if (orderAscTypeCode.equals("desc")) {
 				Collections.sort(filteredPageArticles);
 			}
-		}else if (orderByColumn.equals("hit")) {
-			if(orderAscTypeCode.equals("asc")) {
-				Collections.sort(filteredPageArticles, Collections.reverseOrder());
-			}
-			else if (orderAscTypeCode.equals("desc")) {
-				Collections.sort(filteredPageArticles);
+		} else if (orderByColumn.equals("hitCount")) {
+			if (orderAscTypeCode.equals("asc")) {
+
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p1.getHit() > p2.getHit())
+							return 1;
+						// swap
+						else if ((p1.getHit() == p2.getHit()) && (p1.getId() > p2.getId()))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+				
+				Collections.sort(filteredPageArticles,comparator);
+
+				return filteredPageArticles;
+
+			} else if (orderAscTypeCode.equals("desc")) {
+				Comparator<Article> comparator = new Comparator<Article>() {
+
+					@Override
+					public int compare(Article p1, Article p2) {
+						if (p2.getHit() > p1.getHit())
+							return 1;
+						// swap
+						else if ((p2.getHit() == p1.getHit()) && (p2.getId() > p1.getId()))
+							return 1;
+						// swap
+						else
+							return -1;
+						// no swap
+					}
+				};
+				
+				Collections.sort(filteredPageArticles,comparator);
+
+				return filteredPageArticles;
 			}
 		}
-	
-		return filteredPageArticles;
-	}
 
+		return filteredPageArticles;
+
+	}
 }
