@@ -118,6 +118,8 @@ public class UsrArticleController extends Controller {
 		System.out.printf("내용 : %s\n", article.getBody());
 		System.out.println("조회수 : " + article.getHit());
 		System.out.println("작성자 : " + member.getNickname());
+		System.out.println("좋아요 : " + article.getLike());
+		System.out.println("싫어요 : " + article.getDisLike());
 		
 		article.setHit(article.getHit() +1);
 	}
@@ -162,7 +164,7 @@ public class UsrArticleController extends Controller {
 
 		int loginedMemberId = rq.getLoginedMemberId();
 		
-		int id = articleService.write(board.getId(), loginedMemberId, title, body, 0);
+		int id = articleService.write(board.getId(), loginedMemberId, title, body, 0, 0, 0);
 
 		System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 	}

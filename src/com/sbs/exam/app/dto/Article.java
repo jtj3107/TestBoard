@@ -18,6 +18,8 @@ public class Article implements Comparable<Article> {
 	private String title;
 	private String body;
 	private int hit;
+	private int like;
+	private int disLike;
 
 	@Override
 	public int compareTo(Article a1) {
